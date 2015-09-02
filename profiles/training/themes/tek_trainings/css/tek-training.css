@@ -1,0 +1,35 @@
+
+/*css added by avanish*/
+#page{max-width: 100% !important;}
+@media all and (max-width: 2000px) and (min-width: 960px) {
+ #header div.section, #featured div.section, #messages div.section, #main, #triptych, #footer-columns, #footer #block-views-course-view-block{width: 960px; margin: 0 auto;}
+}
+#page, .region-bottom{max-width: 100%;}
+#footer{padding: 20px 0 30px;}
+#footer #block-views-course-view-block{padding: 0 10px; color: rgba(255, 255, 255, 0.80); border-top: 1px solid rgba(255, 255, 255, 0.15); margin-top: 30px;}
+#footer #block-views-course-view-block ul{list-style: none; padding: 0;}
+#footer #block-views-course-view-block ul li a{color: #fff; border-right: 1px solid rgba(255, 255, 255, 0.80); display: block; float: left; padding: 0 12px; line-height: 1.2em; text-decoration: none;}
+#header, #footer{background-color: #3B3B3B; background-image: -moz-linear-gradient(center top , #292929 0%, #3B3B3B 100%);}
+#header .region-header{float: right; clear: right;}
+#header #navigation{position: static; float: left; height: auto;}
+#header #navigation ul li a{background: rgba(255, 255, 255, 0.7); border-top-left-radius: 8px; border-top-right-radius: 8px; color: #333333; float: left; height: 2.4em; line-height: 2.4em; padding: 0 0.8em; text-decoration: none; text-shadow: 0 1px #EEEEEE;}
+#header #navigation ul li a:hover, #header #navigation ul li a:focus{background: rgba(255, 255, 255, 0.95)} 
+#header #navigation ul li a.active{background: #fff;}
+#site-name a:link, #site-name a:visited{color: #fff !important; font-weight: normal;}
+table{width: 100%;}
+table tr td a, table caption a{color: #0070B3; text-decoration: none;}
+table tr td a:hover, table caption a:hover{text-decoration: underline;}
+table caption{text-align: left; border-bottom: 8px solid #3b3b3b; padding: 4px 9px;}
+tr td, tr th {border: 1px solid #FFFFFF; padding: 4px 9px; text-align: left;}
+tr.odd {background: none repeat scroll 0 0 rgba(0, 0, 0, 0.106);}
+#header #search-block-form{margin-top: 10px;}
+#header #secondary-menu{margin-top: 10px}
+#header #secondary-menu ul li a{color: #fff; text-decoration: none;}
+#header #secondary-menu ul li a:hover, 
+#footer #block-views-course-view-block ul li a:hover{text-decoration: underline;}
+#header #secondary-menu ul li.last{padding-right: 0;}
+.view-calendar .date-heading h3{font-weight: normal;}
+.field-items p{margin: 0;}
+#content article.node a, ul.pager a, .action-links a, .breadcrumb ol li a{color: #0070B3;}
+
+

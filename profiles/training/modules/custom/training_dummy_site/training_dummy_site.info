@@ -1,0 +1,11 @@
+name = Training Dummy Site
+description = Sets up dummy site by creating dummy data
+core = 7.x
+package = Training
+
+; Information added by Drupal.org packaging script on 2014-09-12
+version = "7.x-2.9"
+core = "7.x"
+project = "training"
+datestamp = "1410521707"
+

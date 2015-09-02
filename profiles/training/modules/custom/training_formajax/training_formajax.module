@@ -1,0 +1,143 @@
+<?php
+
+/**
+ * @file
+ * Implements Ajax functionality on various Forms.
+ */
+
+/**
+ * Implements hook_form_alter().
+ */
+function training_formajax_form_alter(&$form, &$form_state, $form_id) {
+  // Ajax implementation for Course-SubTopic.
+  if ($form_id == 'course_subtopic_node_form') {
+    $form['field_course']['und']['#ajax'] = array(
+      'callback' => 'training_course_topic_ajax_callback',
+      'wrapper' => 'replace_topicselect_div',
+      'effect' => 'slide',
+    );
+
+    $form['field_coursetopics']['#prefix'] = '<div id="replace_topicselect_div">';
+    $form['field_coursetopics']['#suffix'] = '</div>';
+  }
+
+  // Ajax implementation for Course-Assignment.
+  if ($form_id == 'course_assignments_node_form') {
+    $form['field_course']['und']['#ajax'] = array(
+      'callback' => 'training_course_assignments_topic_ajax_callback',
+      'wrapper' => 'replace_assignment_topicselect_div',
+      'effect' => 'slide',
+    );
+
+    $form['field_coursetopics']['#prefix'] = '<div id="replace_assignment_topicselect_div">';
+    $form['field_coursetopics']['#suffix'] = '</div>';
+  }
+
+  // Ajax implementation for Training-Calender.
+  if ($form_id == 'training_calender_node_form') {
+    // Resetting few fields to make clone proccess easy.
+    if (arg(2) == 'clone') {
+      $form['title']['#default_value'] = '';
+      $ctr = 0;
+      for ($ctr = 0; $ctr < 10; $ctr++) {
+        if (isset ($form['field_subtopic']['und'][$ctr]['nid'])) {
+          $form['field_subtopic']['und'][$ctr]['nid']['#default_value'] = NULL;
+        }
+      }
+    }
+
+    $form['field_course']['und']['#ajax'] = array(
+      'callback' => 'training_course_tc_topic_ajax_callback',
+      'wrapper' => 'replace_tc_tainingselect_div',
+      'event' => 'change',
+      'method' => 'replace',
+    );
+
+    $form['field_ctraining']['#prefix'] = '<div id="replace_tc_tainingselect_div">';
+    $form['field_ctopic']['#suffix'] = '</div>';
+  }
+}
+
+/**
+ * Funtion to response course ajax call back in Course-SubTopic form.
+ */
+function training_course_topic_ajax_callback($form, $form_state) {
+  $data = array();
+  if (isset($form_state['triggering_element']['#value'])) {
+    $tid = $form_state['triggering_element']['#value'];
+    $result = db_query('SELECT n.nid, n.title FROM {taxonomy_index} AS ti INNER JOIN {node} AS n on n.nid = ti.nid WHERE ti.tid LIKE :tid AND n.type = :course order by n.title', array(':tid' => $tid, ':course' => 'course_topic'));
+  }
+  else {
+    $result = db_query("SELECT nid, title FROM {node} WHERE type = 'course_topic'");
+  }
+  foreach ($result as $record) {
+    $data[$record->nid] = $record->title;
+  }
+  $form['field_coursetopics']['und']['#options'] = $data;
+  return $form['field_coursetopics'];
+}
+
+/**
+ * Funtion to response course ajax call back in Course-Assignment form.
+ */
+function training_course_assignments_topic_ajax_callback($form, $form_state) {
+  $data = array();
+  if (isset($form_state['triggering_element']['#value'])) {
+    $tid = $form_state['triggering_element']['#value'];
+    $result = db_query('SELECT n.nid, n.title FROM {taxonomy_index} AS ti INNER JOIN {node} AS n ON n.nid = ti.nid WHERE ti.tid LIKE :tid AND n.type = :course order by n.title', array(':tid' => $tid, ':course' => 'course_topic'));
+  }
+  else {
+    $result = db_query("SELECT nid, title FROM {node} WHERE type = 'course_topic' order by title ");
+  }
+  foreach ($result as $record) {
+    $data[$record->nid] = $record->title;
+  }
+  $form['field_coursetopics']['und']['#options'] = $data;
+  return $form['field_coursetopics'];
+}
+
+/**
+ * Returns training & topic array for course ajax call in Training-Calender.
+ */
+function training_course_tc_topic_ajax_callback($form, $form_state) {
+  $data = $data_training = array('_none' => '- Select a value -');
+  if ($form_state['triggering_element']['#value'] != '_none') {
+    $tid = $form_state['triggering_element']['#value'];
+    $result = db_query('SELECT n.nid, n.title FROM {taxonomy_index} AS ti INNER JOIN {node} AS n on n.nid = ti.nid WHERE ti.tid LIKE :tid AND n.type = :course order by n.title', array(':tid' => $tid, ':course' => 'course_topic'));
+    $result_training = db_query('SELECT n.nid, n.title FROM {field_data_field_tcourse} AS f INNER JOIN {node} AS n ON n.nid = f.entity_id WHERE f.field_tcourse_tid LIKE :tid AND f.bundle = :training order by n.title', array(':tid' => $tid, ':training' => 'training'));
+  }
+  else {
+    $result = db_query("SELECT nid,title FROM {node} WHERE type = 'course_topic' order by title ");
+    $result_training = db_query("SELECT nid, title FROM {node} WHERE type = 'training_calender' order by title");
+  }
+  foreach ($result as $record) {
+    $data[$record->nid] = $record->title;
+  }
+  foreach ($result_training as $record_training) {
+    $data_training[$record_training->nid] = $record_training->title;
+  }
+  $form['field_ctopic']['und']['#options'] = $data;
+
+  $form['field_ctraining']['und']['#options'] = $data_training;
+
+  return array($form['field_ctraining'], $form['field_ctopic']);
+}
+
+/**
+ * Funtion to response topic ajax call back in Training-Calender form.
+ */
+function training_course_tc_subtopic_ajax_callback($form, $form_state) {
+  $data = array();
+  if ($form_state['triggering_element']['#value'] != '_none') {
+    $cnid = $form_state['triggering_element']['#value'];
+    $result = db_query('SELECT n.nid, n.title FROM {field_data_field_coursetopics} AS fc INNER JOIN {node} AS n on n.nid = fc.entity_id WHERE fc.field_coursetopics_nid LIKE :cnid AND fc.bundle = :subtopic order by n.title', array(':cnid' => $cnid, ':subtopic' => 'course_subtopic'));
+  }
+  else {
+    $result = db_query("SELECT nid, title from {node} WHERE type = 'course_sub_topics' order by title");
+  }
+  foreach ($result as $record) {
+    $data[$record->nid] = $record->title;
+  }
+  $form['field_subtopic']['und']['#options'] = $data;
+  return $form['field_subtopic'];
+}

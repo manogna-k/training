@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Training Topic SubTopic Listing feature.
+ */
+
+include_once 'training_topic_subtopic_listing.features.inc';

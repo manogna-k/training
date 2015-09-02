@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Training Course Topic feature.
+ */
+
+include_once 'training_course_topic.features.inc';

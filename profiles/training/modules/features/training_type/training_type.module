@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Training Type feature.
+ */
+
+include_once 'training_type.features.inc';

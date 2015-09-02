@@ -1,0 +1,35 @@
+name = Training Course-Sub Topic
+description = Training Course-Sub Topic
+core = 7.x
+package = Training
+version = 7.x-1.0
+project = training_course_sub_topic
+dependencies[] = features
+dependencies[] = field_collection
+dependencies[] = field_sql_storage
+dependencies[] = file
+dependencies[] = node
+dependencies[] = node_reference
+dependencies[] = options
+dependencies[] = taxonomy
+dependencies[] = text
+dependencies[] = video
+features[features_api][] = api:1
+features[field][] = field_collection_item-field_subvideo-field_sdesc
+features[field][] = field_collection_item-field_subvideo-field_svideo
+features[field][] = node-course_subtopic-body
+features[field][] = node-course_subtopic-field_course
+features[field][] = node-course_subtopic-field_coursetopics
+features[field][] = node-course_subtopic-field_subdoc
+features[field][] = node-course_subtopic-field_sublink
+features[field][] = node-course_subtopic-field_subsequence
+features[field][] = node-course_subtopic-field_subvideo
+features[node][] = course_subtopic
+features[taxonomy][] = course
+
+; Information added by Drupal.org packaging script on 2014-09-12
+version = "7.x-2.9"
+core = "7.x"
+project = "training"
+datestamp = "1410521707"
+

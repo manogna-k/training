@@ -1,0 +1,30 @@
+<div id="first-time">
+<h1 class="title">Welcome to your new Training Website!</h1>
+
+Please follow these steps to set up your Training Portal in minutes:
+
+<strong>Step 1. Start at the beginning</strong>
+
+Visit the <a href="[[admin]]">administration section</a> for a task-based or <a href="[[admin/index]]">module-based</a> overview of the options available to configure your Website.</li>
+
+<strong>Step 2. Add Courses</strong>.
+1. Add courses on which training to be conducted like Drupal, PHP, Soft Skills, Personality Development etc in <a href="[[admin/structure/taxonomy]]">Vocabulary Courses</a>.
+2. After adding courses, you may like to enable the <a href="[[admin/structure/block]]">Block</a> "View: course_view" in Footer or Header section so that you can see the listing of courses. You may also want to set the Title of the Block to "Courses".
+
+<strong>Step 3. Add Trainers and Trainees</strong>
+You will need to add Trainers who will conduct the Trainings and Trainees who will attend the Trainings.
+1. Add users as <a href="[[admin/people/create]]">Trainers</a> by selecting TRAINER as a Role.
+2. Add users as <a href="[[admin/people/create]]">Trainees</a> by selecting TRAINEE as a Role.
+
+<strong>Step 4. Start building trainings</strong>
+Start <a href="[[node/add]]">creating content</a> (Course Topic, Course Sub topic, Training, Training Calender, Course and user Assignment) for your site. You would like to upload related Videos / Documents / PDFs for Topics / Sub Topics to enhance the learning experience of Trainees.
+1. Add <a href="[[node/add/course-topic]]">Course Topics</a> related to the Course.
+2. Add <a href="[[node/add/course-subtopic]]">Course Sub Topics</a> related to selected Topic in the Course.
+3. Add <a href="[[node/add/course-assignments]]">Course Assignments</a> corresponding to Course Topic.
+4. Add <a href="[[node/add/training]]">Trainings</a> to be conducted like Soft-Skills  for Freshers, Drupal Theming for Themers etc.
+5. Add <a href="[[node/add/training-calender]]">Training-Calender</a> content to schedule trainings.
+
+<strong>Step 5. Setup Homepage</strong>
+Change the 'Default front page' from 'node' to 'calendar-node-field-date' by visiting <a href="[[admin/config/system/site-information]]">site information settings page</a>. This will show Training schedules in calender format.
+
+</div>

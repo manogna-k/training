@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Training Calendar View feature.
+ */
+
+include_once 'training_calendar_view.features.inc';

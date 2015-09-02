@@ -1,0 +1,90 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the Training install profile.
+ */
+
+/**
+ * Implements hook_install().
+ *
+ * Perform actions to set up the site for this profile.
+ */
+function training_install() {
+  include_once DRUPAL_ROOT . '/profiles/standard/standard.install';
+  $result = standard_install();
+  $db_driver = Database::getConnection()->driver();
+  if ($db_driver == 'sqlsrv') {
+    // Also enable the module.
+    module_enable(array('sqlsrv'), FALSE);
+  }
+
+  // Create roles for Trainers / Trainees.
+  $admin_role = new stdClass();
+  $admin_role->name = 'TRAINER';
+  $admin_role->weight = 3;
+  user_role_save($admin_role);
+  // Set this as the administrator role.
+  variable_set('user_admin_role', $admin_role->rid);
+
+  $admin_role = new stdClass();
+  $admin_role->name = 'TRAINEE';
+  $admin_role->weight = 4;
+  user_role_save($admin_role);
+  variable_set('user_admin_role', $admin_role->rid);
+
+  $admin_role = new stdClass();
+  $admin_role->name = 'HR';
+  $admin_role->weight = 5;
+  user_role_save($admin_role);
+  variable_set('user_admin_role', $admin_role->rid);
+
+  // Any themes without keys here will get numeric keys and so will be enabled,
+  // but not placed into variables.
+  $enable = array(
+    'theme_default' => 'tek_trainings',
+    'admin_theme' => 'seven',
+  );
+  theme_enable($enable);
+
+  foreach ($enable as $var => $theme) {
+    if (!is_numeric($var)) {
+      variable_set($var, $theme);
+    }
+  }
+
+  // Disable the default Bartik theme.
+  theme_disable(array('bartik'));
+
+  $query = db_update('block')
+           ->fields(array(
+             'status' => 0,
+           ))
+           ->condition('module', 'system')
+           ->condition('delta', 'powered-by')
+           ->execute();
+  $default_theme = variable_get('theme_default', 'tek_trainings');
+  $admin_theme = 'seven';
+  $blocks = array(
+    array(
+      'module' => 'views',
+      'delta' => 'courses_listing-block',
+      'theme' => $default_theme,
+      'status' => 1,
+      'weight' => 10,
+      'region' => 'footer',
+      'pages' => '',
+      'cache' => -1,
+    ));
+  $query = db_insert('block')
+  ->fields(array(
+      'module', 'delta', 'theme', 'status',
+      'weight', 'region', 'pages', 'cache',
+  ));
+  foreach ($blocks as $block) {
+    $query->values($block);
+  }
+  $query->execute();
+
+  return $result;
+}

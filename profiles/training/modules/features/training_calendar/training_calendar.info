@@ -1,0 +1,35 @@
+name = Training Calendar
+description = Training Calendar
+core = 7.x
+package = Training
+version = 7.x-1.0
+project = training_calendar
+dependencies[] = date
+dependencies[] = features
+dependencies[] = field_sql_storage
+dependencies[] = list
+dependencies[] = node
+dependencies[] = node_reference
+dependencies[] = options
+dependencies[] = taxonomy
+dependencies[] = text
+dependencies[] = user_reference
+features[features_api][] = api:1
+features[field][] = node-training_calender-field_course
+features[field][] = node-training_calender-field_ctopic
+features[field][] = node-training_calender-field_ctraining
+features[field][] = node-training_calender-field_date
+features[field][] = node-training_calender-field_feedback
+features[field][] = node-training_calender-field_subtopic
+features[field][] = node-training_calender-field_trainee
+features[field][] = node-training_calender-field_trainer
+features[field][] = node-training_calender-field_tstatus
+features[node][] = training_calender
+features[taxonomy][] = course
+
+; Information added by Drupal.org packaging script on 2014-09-12
+version = "7.x-2.9"
+core = "7.x"
+project = "training"
+datestamp = "1410521707"
+

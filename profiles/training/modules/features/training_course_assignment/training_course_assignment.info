@@ -1,0 +1,31 @@
+name = Training Course-Assignment
+description = Training Course-Assignment
+core = 7.x
+package = Training
+version = 7.x-1.0
+project = training_course_assignment
+dependencies[] = features
+dependencies[] = field_group
+dependencies[] = field_sql_storage
+dependencies[] = file
+dependencies[] = node
+dependencies[] = node_reference
+dependencies[] = options
+dependencies[] = taxonomy
+dependencies[] = text
+features[features_api][] = api:1
+features[field][] = node-course_assignments-body
+features[field][] = node-course_assignments-field_course
+features[field][] = node-course_assignments-field_coursetopics
+features[field][] = node-course_assignments-field_file_solution
+features[field][] = node-course_assignments-field_text_solution
+features[field_group][] = group_solution|node|course_assignments|form
+features[node][] = course_assignments
+features[taxonomy][] = course
+
+; Information added by Drupal.org packaging script on 2014-09-12
+version = "7.x-2.9"
+core = "7.x"
+project = "training"
+datestamp = "1410521707"
+

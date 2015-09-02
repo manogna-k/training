@@ -1,0 +1,31 @@
+name = Training Type
+description = Training Type
+core = 7.x
+package = Training
+version = 7.x-1.0
+project = training_type
+dependencies[] = date
+dependencies[] = features
+dependencies[] = field_sql_storage
+dependencies[] = list
+dependencies[] = node
+dependencies[] = options
+dependencies[] = taxonomy
+dependencies[] = text
+dependencies[] = user_reference
+features[features_api][] = api:1
+features[field][] = node-training-body
+features[field][] = node-training-field_start
+features[field][] = node-training-field_status
+features[field][] = node-training-field_tcourse
+features[field][] = node-training-field_trainee
+features[field][] = node-training-field_trainer
+features[node][] = training
+features[taxonomy][] = course
+
+; Information added by Drupal.org packaging script on 2014-09-12
+version = "7.x-2.9"
+core = "7.x"
+project = "training"
+datestamp = "1410521707"
+

@@ -1,0 +1,90 @@
+name = "Training"
+description = "Training Website."
+core = "7.x"
+
+; The exclusive flag auto-selects the profile during installation, if there
+; are no other exclusive ones.
+exclusive = "1"
+
+; The distribution_name property is used in the installer and other places as
+; a label for the software being installed.
+distribution_name = "Training"
+
+; Core
+dependencies[] = block
+dependencies[] = color
+dependencies[] = comment
+dependencies[] = contextual
+dependencies[] = dashboard
+dependencies[] = dblog
+dependencies[] = field
+dependencies[] = field_sql_storage
+dependencies[] = field_ui
+dependencies[] = file
+dependencies[] = filter
+dependencies[] = image
+dependencies[] = list
+dependencies[] = menu
+dependencies[] = node
+dependencies[] = number
+dependencies[] = options
+dependencies[] = overlay
+dependencies[] = path
+dependencies[] = rdf
+dependencies[] = search
+dependencies[] = shortcut
+dependencies[] = system
+dependencies[] = taxonomy
+dependencies[] = text
+;dependencies[] = toolbar
+dependencies[] = update
+dependencies[] = user
+
+; Contrib
+dependencies[] = admin_menu
+dependencies[] = admin_menu_toolbar
+dependencies[] = auto_nodetitle
+dependencies[] = calendar
+dependencies[] = clone
+dependencies[] = ctools
+dependencies[] = date
+dependencies[] = date_api
+dependencies[] = date_views
+dependencies[] = entity
+dependencies[] = features
+dependencies[] = field_collection
+dependencies[] = field_group
+dependencies[] = field_permissions
+dependencies[] = flowplayer
+dependencies[] = node_reference
+dependencies[] = pathauto
+dependencies[] = references
+dependencies[] = strongarm
+dependencies[] = token
+dependencies[] = user_reference
+dependencies[] = video
+dependencies[] = views
+dependencies[] = views_ui
+
+; Custom
+dependencies[] = training_formajax
+
+; Features
+dependencies[] = training_calendar
+dependencies[] = training_calendar_view
+dependencies[] = training_course_assignment
+dependencies[] = training_course_sub_topic
+dependencies[] = training_course_topic
+dependencies[] = training_courses_listing
+dependencies[] = training_topic_subtopic_listing
+dependencies[] = training_type
+
+; Files included with profile
+;files[] = training.profile
+
+; Information added by Drupal.org packaging script on 2014-09-12
+version = "7.x-2.9"
+core = "7.x"
+project = "training"
+datestamp = "1410521707"
+

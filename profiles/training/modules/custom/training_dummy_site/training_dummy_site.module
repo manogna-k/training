@@ -1,0 +1,288 @@
+<?php
+
+/**
+ * @file
+ * Sets up dummy site by creating dummy data
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function training_dummy_site_menu() {
+  $items = array();
+
+  $items['admin/config/people/training-dummy-site'] = array(
+    'title' => 'Training dummy site settings',
+    'description' => 'This will allow user to generate Training dummy site.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('training_dummy_site_admin_settings'),
+    'access arguments' => array('administer training dummy site'),
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function training_dummy_site_permission() {
+  return array(
+    'administer training dummy site' => array(
+      'title' => t('administer training dummy site'),
+      'description' => t('This will allow user to gererate training dummy site'),
+    ),
+  );
+}
+
+/**
+ * Page callback for admin settings form.
+ */
+function training_dummy_site_admin_settings($form, &$form_state) {
+
+  $form['training_dummy_site_home_page'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Set Calender as home page.'),
+    '#default_value' => variable_get('training_dummy_site_home_page', 0),
+  );
+  $form['training_dummy_site_generate'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Generate dummy data for your site.'),
+    '#default_value' => variable_get('training_dummy_site_generate', 0),
+  );
+  $form['#submit'][] = 'training_dummy_site_submit';
+
+  return system_settings_form($form);
+}
+
+/**
+ * Creates dummy site data.
+ */
+function training_dummy_site_submit($form, &$form_state) {
+  if ($form_state['values']['training_dummy_site_generate'] == 1) {
+    $message = training_dummy_site_generate();
+    drupal_set_message(t($message), 'status');
+  }
+  if ($form_state['values']['training_dummy_site_home_page'] == 1) {
+    variable_set('site_frontpage', 'calendar-node-field-date');
+  }
+  if ($form_state['values']['training_dummy_site_home_page'] == 0) {
+    variable_set('site_frontpage', 'node');
+  }
+}
+
+/**
+ * Creates dummy site data.
+ */
+function training_dummy_site_generate() {
+
+  $roles = user_roles();
+  // Trainee rid.
+  $tn_role = 5;
+  // Trainer rid.
+  $tr_role = 4;
+  // Active user.
+  $user_status = 1;
+  // Or e.g. 'en' if locale is enabled.
+  $node_language = LANGUAGE_NONE;
+  // (1 or 0): published or not.
+  $node_status = 1;
+  // (1 or 0): promoted to front page.
+  $node_promote = 0;
+  // 2 = comments on, 1 = comments off.
+  $node_comment = 1;
+  // 0 = Not yet begin, 1 = on going, 2 = closed.
+  $training_status = 0;
+
+  $status = variable_get('training_dummy_site_generate', 0);
+  if ($status == 0) {
+    global $user;
+    $vocab_name = 'course';
+    $vocab_course = taxonomy_vocabulary_machine_name_load($vocab_name);
+    $vid = $vocab_course->vid;
+
+    // Creates terms under course vocabulary.
+    $terms = array();
+    $courses = array();
+    $courses = array('course1', 'course2', 'course3');
+    foreach ($courses as $course) {
+      $term = new stdClass();
+      $term->vid = $vid;
+      $term->name = $course;
+      taxonomy_term_save($term);
+      $terms[] = $term->tid;
+    }
+    $min_tid = min($terms);
+    $max_tid = max($terms);
+
+    // Creates users under trainer role.
+    $trainers = array();
+    $trainers_users = array('tr_user1', 'tr_user2', 'tr_user3');
+    foreach ($trainers_users as $trainers_user) {
+      $password = $trainers_user;
+      $userinfo = array(
+        'name' => $trainers_user,
+        'init' => $trainers_user,
+        'mail' => $trainers_user . '@localhost.localhost',
+        'pass' => $password,
+        'status' => $user_status,
+        'roles' => array($tr_role => $roles['4']));
+      $account = user_save('', $userinfo);
+      $trainers[] = $account->uid;
+    }
+    $min_uid_trainer = min($trainers);
+    $max_uid_trainer = max($trainers);
+
+    // Creates users under trainees role.
+    $trainees = array();
+    $trainees_users = array('tn_user1', 'tn_user2', 'tn_user3');
+    foreach ($trainees_users as $trainees_user) {
+      $password = $trainees_user;
+      $userinfo = array(
+        'name' => $trainees_user,
+        'init' => $trainees_user,
+        'mail' => $trainees_user . '@localhost.localhost',
+        'pass' => $password,
+        'status' => $user_status,
+        'roles' => array($tn_role => $roles['5']));
+      $account = user_save('', $userinfo);
+      $trainees[] = $account->uid;
+    }
+    $min_uid_trainee = min($trainees);
+    $max_uid_trainee = max($trainees);
+
+    // Creates content of type course_topic.
+    $course_topics = array();
+    $course_topics = array('topic1', 'topic2', 'topic3', 'topic4', 'topic5',
+      'topic6');
+    $topics = array();
+    foreach ($course_topics as $course_topic) {
+      $node = new stdClass();
+      $node->title = $course_topic;
+      $node->type = 'course_topic';
+      // Sets some defaults. Invokes hook_prepare() and hook_node_prepare().
+      node_object_prepare($node);
+      $node->language = $node_language;
+      $node->uid = $user->uid;
+      $node->status = $node_status;
+      $node->promote = $node_promote;
+      $node->comment = $node_comment;
+      $node->field_course['und'][0] = array('tid' => rand($min_tid, $max_tid));
+      // Prepare node for saving.
+      $node = node_submit($node);
+      node_save($node);
+      $topics[] = $node->nid;
+    }
+    $min_nid_topic = min($topics);
+    $max_nid_topic = max($topics);
+
+    // Creates content of type course_subtopic.
+    $course_sub_topics = array();
+    $sub_topics = array();
+    $course_sub_topics = array('sub_topic1', 'sub_topic2', 'sub_topic3',
+      'sub_topic4', 'sub_topic5', 'sub_topic6');
+    foreach ($course_sub_topics as $course_sub_topic) {
+      $node = new stdClass();
+      $node->title = $course_sub_topic;
+      $node->type = 'course_subtopic';
+      node_object_prepare($node);
+      $node->language = $node_language;
+      $node->uid = $user->uid;
+      $node->status = $node_status;
+      $node->promote = $node_promote;
+      $node->comment = $node_comment;
+      $node->field_course['und'][0] = array('tid' => rand($min_tid, $max_tid));
+      $node->field_coursetopics['und'][0] = array(
+        'nid' => rand($min_nid_topic, $max_nid_topic));
+      $node = node_submit($node);
+      node_save($node);
+      $sub_topics[] = $node->nid;
+    }
+    $min_nid_subtopic = min($sub_topics);
+    $max_nid_subtopic = max($sub_topics);
+
+    // Creates content of type course_assignments.
+    $course_assignments = array();
+    $course_assignments = array('course_assignment1',
+      'course_assignment2', 'course_assignment3', 'course_assignment4',
+      'course_assignment5', 'course_assignment6');
+    foreach ($course_assignments as $course_assignment) {
+      $node = new stdClass();
+      $node->title = $course_assignment;
+      $node->type = 'course_assignments';
+      node_object_prepare($node);
+      $node->language = $node_language;
+      $node->uid = $user->uid;
+      $node->status = $node_status;
+      $node->promote = $node_promote;
+      $node->comment = $node_comment;
+      $node->field_course['und'][0] = array('tid' => rand($min_tid, $max_tid));
+      $node->field_coursetopics['und'][0] = array(
+        'nid' => rand($min_nid_topic, $max_nid_topic));
+      $node = node_submit($node);
+      node_save($node);
+    }
+
+    // Creates content of type training.
+    $trainings = array();
+    $training_data = array();
+    $trainings = array('training1',
+      'training2', 'training3', 'training4', 'training5', 'training6');
+    $start_date = date("Y-m-d G:i:s");
+    $end_date = date("Y-m-d G:i:s", strtotime("+3 day", strtotime($start_date)));
+    foreach ($trainings as $training) {
+      $node = new stdClass();
+      $node->title = $training;
+      $node->type = 'training';
+      node_object_prepare($node);
+      $node->language = $node_language;
+      $node->uid = $user->uid;
+      $node->status = $node_status;
+      $node->promote = $node_promote;
+      $node->comment = $node_comment;
+      $node->field_tcourse['und'][0] = array('tid' => rand($min_tid, $max_tid));
+      $node->field_status['und'][0] = array('value' => $training_status);
+      $node->field_start['und'][0] = array('value' => $start_date, 'value2' => $end_date);
+      $node->field_trainer['und'][0] = array('uid' => rand($min_uid_trainer, $max_uid_trainer));
+      $node->field_trainee['und'][0] = array('uid' => rand($min_uid_trainee, $max_uid_trainee));
+      $node = node_submit($node);
+      node_save($node);
+      $training_data[] = $node->nid;
+      $start_date = date("Y-m-d G:i:s", strtotime("+3 day", strtotime($start_date)));
+      $end_date = date("Y-m-d G:i:s", strtotime("+3 day", strtotime($end_date)));
+    }
+    $min_nid_training = min($training_data);
+    $max_nid_training = max($training_data);
+
+    // Creates content of type training_calender.
+    $training_calenders = array();
+    $training_calenders = array('training_calender1', 'training_calender2',
+      'training_calender3', 'training_calender4', 'training_calender5',
+      'training_calender6');
+    $date = date("Y-m-d G:i:s");
+    foreach ($training_calenders as $training_calender) {
+      $node = new stdClass();
+      $node->title = $training_calender;
+      $node->type = 'training_calender';
+      node_object_prepare($node);
+      $node->language = $node_language;
+      $node->uid = $user->uid;
+      $node->status = $node_status;
+      $node->promote = $node_promote;
+      $node->comment = $node_comment;
+      $node->field_course['und'][0] = array('tid' => rand($min_tid, $max_tid));
+      $node->field_ctraining['und'][0] = array('nid' => rand($min_nid_training, $max_nid_training));
+      $node->field_ctopic['und'][0] = array('nid' => rand($min_nid_topic, $max_nid_topic));
+      $node->field_subtopic['und'][0] = array('nid' => rand($min_nid_subtopic, $max_nid_subtopic));
+      $node->field_trainer['und'][0] = array('uid' => rand($min_uid_trainer, $max_uid_trainer));
+      $node->field_trainee['und'][0] = array('uid' => rand($min_uid_trainee, $max_uid_trainee));
+      $node->field_date['und'][0] = array('value' => $date);
+      $node = node_submit($node);
+      node_save($node);
+      $date = date("Y-m-d G:i:s", strtotime("+1 day", strtotime($date)));
+    }
+    return 'We have generated dummy data but not uploaded videos and docs so you can add it, to make the site more real.';
+  }
+  else {
+    return 'You have already generated dummy data.';
+  }
+}

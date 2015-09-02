@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Training Course-Assignment feature.
+ */
+
+include_once 'training_course_assignment.features.inc';
